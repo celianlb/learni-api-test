@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model Formation {
+  id              Int         @id @default(autoincrement())
+  slug            String      @unique
+  titre           String
+  duree           String
+  format          String
+  participantsMax Int
+  niveau          String
+  langue          String
+  public          String
+  prerequis       String
+  objectifs       String[]
+  tarifIndividuel        String
+  tarifIndividuelNumeric Int?    // Champ numérique pour filtres performants
+  tarifCollectif         String?
+  evaluation      String[]
+  apprentissage   String[]
+  accompagnement  String
+  categoryId      Int?
+  code            String      @unique
+  category        Category?   @relation(fields: [categoryId], references: [id])
+  programme       Programme[]
+  tags            Tag[]       @relation("FormationToTag")
+
+  @@index([titre], map: "index_titre")
+  @@index([public], map: "index_public")                    // recherche public cible
+  @@index([prerequis], map: "index_prerequis")              // recherche prérequis
+  @@index([categoryId], map: "index_category")              // recherche par catégorie
+  @@index([niveau, langue], map: "index_niveau_langue")     // filtres fréquents
+  @@index([niveau], map: "index_niveau")                    // filtrage par niveau
+  @@index([format], map: "index_format")                    // filtrage par format
+  @@index([duree], map: "index_duree")                      // filtrage par durée
+  @@index([tarifIndividuel], map: "index_tarif")            // filtrage par prix (string)
+  @@index([tarifIndividuelNumeric], map: "index_tarif_numeric") // filtrage par prix (numérique - performant)
+  @@index([categoryId, niveau], map: "index_category_niveau") // filtres combinés fréquents
+  @@index([format, niveau], map: "index_format_niveau")     // filtres combinés fréquents
+}
+
+model Programme {
+  id          Int       @id @default(autoincrement())
+  jour        Int
+  titre       String
+  contenu     String
+  formationId Int
+  formation   Formation @relation(fields: [formationId], references: [id])
+}
+
+model Category {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  slug       String      @unique
+  formations Formation[]
+  tags       Tag[]
+}
+
+model Tag {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  categoryId Int
+  category   Category    @relation(fields: [categoryId], references: [id])
+  formations Formation[] @relation("FormationToTag")
+
+  @@unique([name, categoryId])
+}
+
+model Article {
+  id                      String                    @id @default(cuid())
+  titre                   String
+  slug                    String                    @unique
+  description             String
+  auteurId                String
+  date_publication        DateTime
+  temps_lecture           Int
+  extrait_texte           String
+  datePublished           DateTime
+  metaId                  String                    @unique
+  statut                  String                    @default("ko")
+  AuteurArticle           AuteurArticle             @relation(fields: [auteurId], references: [id])
+  MetaArticle             MetaArticle               @relation(fields: [metaId], references: [id])
+  ContenuStructureArticle ContenuStructureArticle[]
+  CategoryArticle         CategoryArticle[]         @relation("ArticleCategories")
+  TagArticle              TagArticle[]              @relation("ArticleTags")
+
+  @@index([slug], map: "index_article_slug")
+}
+
+model AuteurArticle {
+  id      String    @id @default(cuid())
+  nom     String
+  email   String    @unique
+  bio     String
+  Article Article[]
+}
+
+model CategoryArticle {
+  id      String    @id @default(cuid())
+  nom     String    @unique
+  Article Article[] @relation("ArticleCategories")
+}
+
+model ContenuStructureArticle {
+  id          String             @id @default(cuid())
+  type        ContenuTypeArticle
+  balise      String?
+  content     String?
+  listType    String?
+  articleId   String
+  Article     Article            @relation(fields: [articleId], references: [id])
+  ItemArticle ItemArticle[]
+}
+
+model ItemArticle {
+  id                      String                  @id @default(cuid())
+  value                   String
+  structureId             String
+  ContenuStructureArticle ContenuStructureArticle @relation(fields: [structureId], references: [id])
+}
+
+model MetaArticle {
+  id              String   @id @default(cuid())
+  titre_seo       String
+  description_seo String
+  keywords        String
+  robots          String
+  Article         Article?
+}
+
+model TagArticle {
+  id      String    @id @default(cuid())
+  nom     String    @unique
+  Article Article[] @relation("ArticleTags")
+}
+
+enum ContenuTypeArticle {
+  text
+  list
+}
+
+model Affiliation {
+  id         String       @id @default(cuid())
+  nom        String
+  prenom     String
+  email      String       @unique
+  telephone  String       @unique
+  code       String       @unique
+  partenaires Partenaire[] @relation("AffiliationPartenaires")
+}
+
+model Partenaire {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  affiliationId String
+  affiliation   Affiliation    @relation("AffiliationPartenaires", fields: [affiliationId], references: [id])
+}
