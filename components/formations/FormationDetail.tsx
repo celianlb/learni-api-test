@@ -267,7 +267,7 @@ export const FormationDetail = memo(({ formation }: FormationDetailProps) => {
               {/* Méthodes d'apprentissage */}
               {formation.apprentissage.length > 0 && (
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Méthodes d'apprentissage</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Méthodes d&apos;apprentissage</h3>
                   <ul className="space-y-2">
                     {formation.apprentissage.map((method, index) => (
                       <li key={index} className="flex items-start space-x-2 text-sm">

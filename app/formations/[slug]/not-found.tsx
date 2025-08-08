@@ -27,7 +27,7 @@ export default function FormationNotFound() {
           </h1>
           
           <p className="text-gray-600 mb-8">
-            Désolé, la formation que vous recherchez n'existe pas ou n'est plus disponible.
+            Désolé, la formation que vous recherchez n&apos;existe pas ou n&apos;est plus disponible.
           </p>
           
           <div className="space-y-3">
@@ -42,7 +42,7 @@ export default function FormationNotFound() {
               href="/"
               className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              Retour à l'accueil
+              Retour à l&apos;accueil
             </Link>
           </div>
         </div>

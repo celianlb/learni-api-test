@@ -34,7 +34,7 @@ const Row = memo(({ index, style, data }: {
 
   return (
     <div style={style} className="flex gap-6 px-4">
-      {rowFormations.map((formation, colIndex) => (
+      {rowFormations.map((formation) => (
         <div
           key={formation.id}
           className="flex-1"
@@ -77,7 +77,7 @@ export const VirtualizedFormationsList = memo(({
     return index < rowCount
   }, [rowCount])
 
-  const getItemSize = useCallback((index: number) => {
+  const getItemSize = useCallback(() => {
     return CARD_HEIGHT + CARD_SPACING
   }, [])
 

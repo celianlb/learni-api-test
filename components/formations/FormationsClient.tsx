@@ -1,7 +1,5 @@
 'use client'
 
-import { Suspense } from 'react'
-import Link from 'next/link'
 import { SearchBar } from '@/components/formations/SearchBar'
 import { FormationFilters } from '@/components/formations/FormationFilters'
 import { FormationCard } from '@/components/formations/FormationCard'
